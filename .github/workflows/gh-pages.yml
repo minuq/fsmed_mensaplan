@@ -15,11 +15,11 @@ jobs:
         with:
           python-version: 3.9
       - name: Install pipenv
-        run: pip install pipenv
-      - name: Run tests
         run: |
-          pipenv install 
-          pipenv run parse.py
+          pip install pipenv
+          pipenv install
+      - name: Run parse.py
+        run: pipenv run ./parse.py
 
       - uses: actions/checkout@v2
         with:

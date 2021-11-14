@@ -12,6 +12,8 @@ jobs:
 
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner
+        with:
+          github_token: ${{ secrets.GH_PAT }}
 
       - name: setup python
         uses: actions/setup-python@v2

@@ -18,9 +18,6 @@ def parseMenu():
     jsonString = jsonString.replace("<span class=\"menue-nutr\">+</span>", "")
     jsonString = jsonString.replace("<sup> ", "(")
     jsonString = jsonString.replace("</sup>", ")")
-    #jsonString = jsonString.replace("div","span")
-    #jsonString = jsonString.replace("image","span")
-    #print(jsonString)
     jsonString = BeautifulSoup(jsonString, 'html.parser')
     pricingList = {
         "Wok":"3.50€",
@@ -72,6 +69,8 @@ def parseMenu():
                         if (category not in menus[currentDate]):
                             menus[currentDate][category] = {}
                     # if there's a menu description, there are children
+                    # if ("extra" in child['class']):
+                    #     print(child.text)
                     if ("menue-desc" in child['class']):
                         for dish in child.contents:
                             # if there are multiple menus for a category, append them
@@ -97,7 +96,7 @@ def parseMenu():
                                 "price": price
                             }
             #! todo side dishes
-            
+                #print(menus[currentDate][category])
             except TypeError:
                 pass
             except KeyError:
@@ -130,31 +129,23 @@ def convertToMarkdown(jsonString):
     md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\npublishDate: "+header_publish+"\ndraft: false\n---\n"
     for dish in menu:
         try:
-            md+=("**"+dish+":** "+menu[dish]['0']['name'])+"\n"
-            #md += "<div class=\"flex-container\">\n"
-            for image in menu[dish]['0']['image']:
-                #md += "![image](../images/"+image+")"
-                md += "<img loading=\"lazy\" style=\"display: block; float:right;\" src=\"../images/"+image+"\" alt=\""+image+"\">"
-            #md += "</div>\n"
+            md+="**"+dish+":** "
+            for variant in menu[dish]:
+                md += menu[dish][variant]['name']+"\n"
+            
+                for image in menu[dish][variant]['image']:
+                    md += "<img loading=\"lazy\" style=\"display: block; float:right;\" src=\"../images/"+image+"\" alt=\""+image+"\">"
+            
             md += "<br/><br/>\n\n"
         except (TypeError, KeyError):
             pass
         
     return(md)
     
-# Tellergericht
-# Vegetarisch
-# Klassiker
-# Pizza des Tages
-# Pizza Classics
-# Wok
-# Hauptbeilagen
-# Nebenbeilage
-
 f = open('content/posts/1.md','w')
 f.write(convertToMarkdown(parseMenu()))
 f.close()
-
+#print(convertToMarkdown(parseMenu()))
 #Klassiker {'0': {'name': 'Wirsingroulade vom Schwein (A,B,D,G,H,J) | Kümmelsauce mit Weißwein (5,L)', 
 # 'nutrition_info': '', 
 # 'image': ['resources/images/inhalt/Schwein.png'], 

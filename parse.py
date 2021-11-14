@@ -124,16 +124,19 @@ def parseMenu():
 def convertToMarkdown(jsonString):
     menu = json.loads(jsonString)
     header_title = menu['date'].split(", ")[0]
-    today = datetime.strptime(menu['date'].split(", ")[1], '%d.%m.%Y')-timedelta(days=1)
+    today = datetime.strptime(menu['date'].split(", ")[1], '%d.%m.%Y')
     header_date = today.strftime('%Y-%m-%d')
-    md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\ndraft: false\n---\n"
+    header_publish = date.today().strftime('%Y-%m-%d')
+    md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\npublishDate: "+header_publish+"\ndraft: false\n---\n"
     for dish in menu:
         try:
             md+=("**"+dish+":** "+menu[dish]['0']['name'])+"\n"
+            #md += "<div class=\"flex-container\">\n"
             for image in menu[dish]['0']['image']:
                 #md += "![image](../images/"+image+")"
-                md += "<img loading=\"lazy\" style=\"display: block; float:left;\" src=\"../images/"+image+"\" alt=\""+image+"\">"
-            md += "\n\n"
+                md += "<img loading=\"lazy\" style=\"display: block; float:right;\" src=\"../images/"+image+"\" alt=\""+image+"\">"
+            #md += "</div>\n"
+            md += "<br/><br/>\n\n"
         except (TypeError, KeyError):
             pass
         

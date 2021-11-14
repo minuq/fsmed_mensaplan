@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - main  # Set a branch to deploy
-  pull_request:
+  workflow_run:
+    workflows: ["update_plan"]
+    types:
+      - completed
 
 jobs:
   deploy:

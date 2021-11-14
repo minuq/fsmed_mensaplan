@@ -129,14 +129,17 @@ def convertToMarkdown(jsonString):
     md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\npublishDate: "+header_publish+"\ndraft: false\n---\n"
     for dish in menu:
         try:
-            md+="**"+dish+":** "
+            if (dish == "date"):
+                continue
+            md+="### "+dish+"  \n"
             for variant in menu[dish]:
-                md += menu[dish][variant]['name']+"\n"
-            
                 for image in menu[dish][variant]['image']:
-                    md += "<img loading=\"lazy\" style=\"display: block; float:right;\" src=\"../images/"+image+"\" alt=\""+image+"\">"
-            
-            md += "<br/><br/>\n\n"
+                    if dish in ["Klassiker","Tellergericht","Vegetarisch","Pizza des Tages"]:
+                        md += "<img loading=\"lazy\" style=\"display: block; float:right;\" src=\"../images/"+image+"\" alt=\""+image+"\" height=30px>"
+                    else:
+                        md += "<img loading=\"lazy\" style=\"display: block; float:left;\" src=\"../images/"+image+"\" alt=\""+image+"\" height=30px>"
+                md += menu[dish][variant]['name']+"  \n"
+            md += "  \n  \n"
         except (TypeError, KeyError):
             pass
         

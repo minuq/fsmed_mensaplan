@@ -1,0 +1,3 @@
+[submodule "themes/modPaperMod"]
+	path = themes/modPaperMod
+	url = https://github.com/minuq/hugo-PaperMod

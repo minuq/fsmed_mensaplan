@@ -42,36 +42,32 @@ def parseMenu():
         if (cnt % 2 == 0):
             currentDate = int(cnt/2)
             menus[currentDate] = {"date":days[currentDate]}
-            #print(days[currentDate])
         cnt+=1
-        # * <td class="menue-wrapper">
-        # *   <span class="menue-item menue-category">Wok</span>
-        # *   <span class="menue-item menue-desc">
-        # *       <span class="expand-nutr"><span class="menue-nutr">+</span>Hähnchenfleisch süss-scharf | Bananen-Erdnuss-Sauce <sup> 2,A,F,G,A1</sup> | Basmatireis</span>
-        # *       <div class="nutr-info">
-        # *           <div>Brennwert = 3691 kJ (882 kcal)<br>Fett = 27,9g<br>Kohlenhydrate = 101,3g<br>Eiweiß = 51,3g</div>
-        # *           <img src="resources/images/inhalt/Geflügel.png" class="content-image">
-        # *       </div>
-        # *   </span>
-        # *   <span class="menue-item menue-price large-price">3,50 €</span>
-        # * </td>
 
         # iterate through tds of each table
         tds = table.find_all("td")
         for td in tds:
             try:
                 category = "Undefined"
-                # iterate through td contents, parsing menu categories
+                # iterate through td contents, finding menu categories
                 for child in td.contents:
                     if ("menue-category" in child['class']):
                         category = child.text
                         # if category does not exist yet, add it
                         if (category not in menus[currentDate]):
                             menus[currentDate][category] = {}
+                                                    
                     # if there's a menu description, there are children
-                    # if ("extra" in child['class']):
-                    #     print(child.text)
                     if ("menue-desc" in child['class']):
+                        # side dishes need to be handled different, having no nutr-info class
+                        if ("extra" in child['class']):
+                            idx = len(menus[currentDate][category])
+                            foodName = child.text
+                            menus[currentDate][category][idx] = {
+                                "name": foodName,
+                                "image": ""
+                            }
+
                         for dish in child.contents:
                             # if there are multiple menus for a category, append them
                             if ("expand-nutr" in dish['class']):
@@ -80,6 +76,7 @@ def parseMenu():
                             nutrition_info = ""
                             image = ""
                             # bullshit regex parsing, but necessary
+                            # at least it was when nutrition info was still provided
                             for div in child:
                                 nutrition_info = re.sub("<div>Brennwert(.+?)</div>",r'Brennwert \1',dish.text)
                                 if ("nutr-info" in div['class']):
@@ -95,8 +92,6 @@ def parseMenu():
                                 "image": image,
                                 "price": price
                             }
-            #! todo side dishes
-                #print(menus[currentDate][category])
             except TypeError:
                 pass
             except KeyError:
@@ -125,7 +120,9 @@ def convertToMarkdown(jsonString):
     header_title = menu['date'].split(", ")[0]
     today = datetime.strptime(menu['date'].split(", ")[1], '%d.%m.%Y')
     header_date = today.strftime('%Y-%m-%d')
-    header_publish = date.today().strftime('%Y-%m-%d')
+    # publish date has to be in the past so we make that happen
+    today -= timedelta(days=1)
+    header_publish = today.strftime('%Y-%m-%d')
     md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\npublishDate: "+header_publish+"\ndraft: false\n---\n"
     for dish in menu:
         try:
@@ -133,23 +130,24 @@ def convertToMarkdown(jsonString):
                 continue
             md+="### "+dish+"  \n"
             for variant in menu[dish]:
+                md += "<div class=\"flex-container\">\n<div>"
+                # replace trailing " oder  " if there's no alternative
+                name = menu[dish][variant]['name'].replace(" | ",", ")
+                if (name[-7:]==" oder  "):
+                    name = name[0:-7]
+                md += name
+                md += "</div>"
+                md += "<div margin-left=\"auto\">"  
                 for image in menu[dish][variant]['image']:
-                    if dish in ["Klassiker","Tellergericht","Vegetarisch","Pizza des Tages"]:
-                        md += "<img loading=\"lazy\" style=\"display: block; float:right;\" src=\"../images/"+image+"\" alt=\""+image+"\" height=30px>"
-                    else:
-                        md += "<img loading=\"lazy\" style=\"display: block; float:left;\" src=\"../images/"+image+"\" alt=\""+image+"\" height=30px>"
-                md += menu[dish][variant]['name']+"  \n"
-            md += "  \n  \n"
+                    md += "<img loading=\"lazy\" src=\"../images/"+image+"\" style=\"float:right;\" alt=\""+image+"\" height=30px>"
+                md += "</div>"
+                md +="</div>"
+            # double newline is necessary for hugo to interpret headlines correctly
+            md += "\n\n"
         except (TypeError, KeyError):
             pass
-        
     return(md)
     
 f = open('content/posts/1.md','w')
 f.write(convertToMarkdown(parseMenu()))
 f.close()
-#print(convertToMarkdown(parseMenu()))
-#Klassiker {'0': {'name': 'Wirsingroulade vom Schwein (A,B,D,G,H,J) | Kümmelsauce mit Weißwein (5,L)', 
-# 'nutrition_info': '', 
-# 'image': ['resources/images/inhalt/Schwein.png'], 
-# 'price': '2.60€'}}

@@ -1,7 +1,7 @@
 baseURL = 'https://mensaplan.fsmed.rwth-aachen.de'
 languageCode = 'de-de'
 title = 'Mensa Vita'
-theme = "PaperMod"
+theme = "modPaperMod"
 
 [markup.goldmark.renderer] 
 unsafe= true

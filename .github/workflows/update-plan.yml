@@ -1,9 +1,6 @@
 name: update_plan
 
 on:
-  push:
-    branches:
-      - main  # Set a branch to deploy
   schedule:
     - cron: '0 3 * * *' # runs at 03:00 GMT everyday
   workflow_dispatch:

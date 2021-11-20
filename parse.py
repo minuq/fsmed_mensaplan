@@ -29,7 +29,7 @@ def parseMenu():
     }
 
     menus = {}
-    
+
     # create an array of days that we'll call upon later
     days = []
     h3 = jsonString.find_all("h3")
@@ -56,7 +56,6 @@ def parseMenu():
                         # if category does not exist yet, add it
                         if (category not in menus[currentDate]):
                             menus[currentDate][category] = {}
-                                                    
                     # if there's a menu description, there are children
                     if ("menue-desc" in child['class']):
                         # side dishes need to be handled different, having no nutr-info class
@@ -96,8 +95,6 @@ def parseMenu():
                 pass
             except KeyError:
                 pass
-    #print(json.dumps(menus[currentDate], indent=2, ensure_ascii=False))
-    
     d = date.today().strftime('%A')
     today = date.today()
     if d == "Saturday":
@@ -107,7 +104,6 @@ def parseMenu():
 
 
     today = format_date(today, 'EEEE, dd.M.yyyy', locale='de_DE')
-    
     try:
         return(json.dumps(menus[days.index(today)], indent=2, ensure_ascii=False))
     except ValueError:
@@ -121,7 +117,7 @@ def convertToMarkdown(jsonString):
     today = datetime.strptime(menu['date'].split(", ")[1], '%d.%m.%Y')
     header_date = today.strftime('%Y-%m-%d')
     # publish date has to be in the past so we make that happen
-    header_publish = datetime.date(1970,1,1).strftime('%Y-%m-%d')
+    header_publish = date(1970,1,1).strftime('%Y-%m-%d')
     md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\npublishDate: "+header_publish+"\ndraft: false\n---\n"
     for dish in menu:
         try:
@@ -136,7 +132,7 @@ def convertToMarkdown(jsonString):
                     name = name[0:-7]
                 md += name
                 md += "</div>"
-                md += "<div margin-left=\"auto\">"  
+                md += "<div margin-left=\"auto\">"
                 for image in menu[dish][variant]['image']:
                     md += "<img loading=\"lazy\" src=\"../images/"+image+"\" style=\"float:right;\" alt=\""+image+"\" height=30px>"
                 md += "</div>"
@@ -146,7 +142,7 @@ def convertToMarkdown(jsonString):
         except (TypeError, KeyError):
             pass
     return(md)
-    
+
 f = open('content/posts/1.md','w')
 f.write(convertToMarkdown(parseMenu()))
 f.close()

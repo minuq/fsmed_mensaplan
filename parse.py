@@ -117,7 +117,9 @@ def convertToMarkdown(jsonString):
     today = datetime.strptime(menu['date'].split(", ")[1], '%d.%m.%Y')
     header_date = today.strftime('%Y-%m-%d')
     # publish date has to be in the past so we make that happen
-    header_publish = date(1970,1,1).strftime('%Y-%m-%d')
+    # not a static date though so our action doesn't fail on weekends and causes nasty emails
+    header_publish = today-timedelta(days=365)
+    header_publish = header_publish.strftime('%Y-%m-%d')
     md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\npublishDate: "+header_publish+"\ndraft: false\n---\n"
     for dish in menu:
         try:

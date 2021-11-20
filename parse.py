@@ -62,7 +62,6 @@ def parseMenu():
                         if ("extra" in child['class']):
                             idx = len(menus[currentDate][category])
                             foodName = re.sub("\(.+?\)","",child.text)
-                            print(foodName)
                             menus[currentDate][category][idx] = {
                                 "name": foodName,
                                 "image": ""
@@ -72,7 +71,7 @@ def parseMenu():
                             # if there are multiple menus for a category, append them
                             if ("expand-nutr" in dish['class']):
                                 idx = len(menus[currentDate][category])
-                                foodName = dish.text
+                                foodName = re.sub("\(.+?\)","",dish.text)
                             nutrition_info = ""
                             image = ""
                             # bullshit regex parsing, but necessary

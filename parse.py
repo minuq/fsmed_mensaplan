@@ -61,7 +61,8 @@ def parseMenu():
                         # side dishes need to be handled different, having no nutr-info class
                         if ("extra" in child['class']):
                             idx = len(menus[currentDate][category])
-                            foodName = child.text
+                            foodName = re.sub("\(.+?\)","",child.text)
+                            print(foodName)
                             menus[currentDate][category][idx] = {
                                 "name": foodName,
                                 "image": ""

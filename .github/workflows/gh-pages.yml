@@ -1,9 +1,6 @@
 name: fsmed_mensaplan
 
 on:
-  push:
-    branches:
-      - main  # Set a branch to deploy
   workflow_run:
     workflows: ["update_plan"]
     types:

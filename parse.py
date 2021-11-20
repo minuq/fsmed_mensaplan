@@ -61,7 +61,7 @@ def parseMenu():
                         # side dishes need to be handled different, having no nutr-info class
                         if ("extra" in child['class']):
                             idx = len(menus[currentDate][category])
-                            foodName = re.sub("\(.+?\)","",child.text)
+                            foodName = child.text
                             menus[currentDate][category][idx] = {
                                 "name": foodName,
                                 "image": ""
@@ -71,7 +71,7 @@ def parseMenu():
                             # if there are multiple menus for a category, append them
                             if ("expand-nutr" in dish['class']):
                                 idx = len(menus[currentDate][category])
-                                foodName = re.sub("\(.+?\)","",dish.text)
+                                foodName = dish.text
                             nutrition_info = ""
                             image = ""
                             # bullshit regex parsing, but necessary
@@ -126,8 +126,9 @@ def convertToMarkdown(jsonString):
             md+="### "+dish+"  \n"
             for variant in menu[dish]:
                 md += "<div class=\"flex-container\">\n<div>"
+                # remove allergen informations as nobody really cares on this display
+                name = re.sub(" \(.+?\)","",menu[dish][variant]['name']).replace(" | ",", ")
                 # replace trailing " oder  " if there's no alternative
-                name = menu[dish][variant]['name'].replace(" | ",", ")
                 if (name[-7:]==" oder  "):
                     name = name[0:-7]
                 md += name

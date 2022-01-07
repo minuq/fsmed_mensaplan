@@ -35,7 +35,6 @@ def parseMenu():
     h3 = jsonString.find_all("h3")
     for day in h3:
         days.append(day.text)
-
     tables = jsonString.find_all("table")
     cnt = 0
     for table in tables:
@@ -103,10 +102,10 @@ def parseMenu():
         today += timedelta(days=1)
 
 
-    today = format_date(today, 'EEEE, dd.M.yyyy', locale='de_DE')
+    today = format_date(today, 'EEEE, dd.MM.yyyy', locale='de_DE')
     try:
         return(json.dumps(menus[days.index(today)], indent=2, ensure_ascii=False))
-    except ValueError:
+    except ValueError as err:
         return("Mensa geschlossen")
 
 
@@ -121,7 +120,6 @@ def convertToMarkdown(jsonString):
     header_date = today.strftime('%Y-%m-%d')
     # publish date has to be in the past so we make that happen
     # not a static date though so our action doesn't fail on weekends and causes nasty emails
-    print(today)
     header_publish = today-timedelta(days=365)
     header_publish = header_publish.strftime('%Y-%m-%d %H:%M:%S')
     md = "---\ntitle: \""+header_title+"\"\ndate: "+header_date+"\npublishDate: "+header_publish+"\ndraft: false\n---\n"

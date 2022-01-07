@@ -112,7 +112,10 @@ def parseMenu():
 
 
 def convertToMarkdown(jsonString):
-    menu = json.loads(jsonString)
+    try:
+        menu = json.loads(jsonString)
+    except (json.decoder.JSONDecodeError):
+        return(jsonString)
     header_title = menu['date'].split(", ")[0]
     today = datetime.strptime(menu['date'].split(", ")[1], '%d.%m.%Y')
     header_date = today.strftime('%Y-%m-%d')

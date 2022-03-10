@@ -11,7 +11,7 @@ from datetime import datetime, date, timedelta
 # returns a json containing all available days
 def parseMenu():
     url = 'https://www.studierendenwerk-aachen.de/speiseplaene/vita-w.html'
-    r = requests.get(url)
+    r = requests.get(url,verify=False)
     r.encoding = "utf-8"
     jsonString = r.text.replace("<br>"," ").replace("<br />"," ")
     jsonString = re.sub("<span class=\"seperator\">(.+?)</span>",r' \1 ', jsonString)

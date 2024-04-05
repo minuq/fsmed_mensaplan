@@ -42,7 +42,7 @@ jobs:
           git commit --allow-empty -m "update data" -a
       
       - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GH_PAT }}
           branch: main

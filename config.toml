@@ -1,4 +1,4 @@
-baseURL = 'https://mensaplan.fsmed.rwth-aachen.de'
+baseURL = 'https://minuq.github.io/fsmed_mensaplan'
 languageCode = 'de-de'
 title = 'Mensa Vita'
 theme = "modPaperMod"

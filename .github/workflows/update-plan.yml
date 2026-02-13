@@ -1,9 +1,9 @@
 name: update_plan
 
-#on:
+on:
 #  schedule:
 #    - cron: '0 3 * * *' # runs at 03:00 GMT everyday
-#  workflow_dispatch:
+  workflow_dispatch:
   
 jobs:
   build:
